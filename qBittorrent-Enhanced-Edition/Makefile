@@ -11,11 +11,10 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-release-$(PKG_VERSION)
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
+PKG_CPE_ID:=cpe:/a:qbittorrent:qbittorrent
 
+PKG_BUILD_DEPENDS:=qt6tools/host
 PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
-
-PKG_BUILD_DEPENDS:=qttools
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -26,7 +25,9 @@ define Package/qBittorrent-Enhanced-Edition
   CATEGORY:=Network
   TITLE:=bittorrent client programmed in C++ / Qt
   URL:=https://github.com/c0re100/qBittorrent-Enhanced-Edition
-  DEPENDS:=+boost +libtorrent-rasterbar +qt5-core +qt5-network +qt5-sql +qt5-xml
+  DEPENDS:=+libtorrent-rasterbar +libQt6Core +libQt6Network +libQt6Sql \
+    +libQt6Xml +qt6-plugin-libqopensslbackend +qt6-plugin-libqsqlite
+  PROVIDES:=qbittorrent
 endef
 
 define Package/qBittorrent-Enhanced-Edition/description
@@ -39,11 +40,10 @@ endef
 
 CMAKE_OPTIONS+= \
 	-DGUI=OFF \
+	-DQT6=ON \
 	-DSTACKTRACE=OFF \
-	-DWEBUI=ON
-
-TARGET_CFLAGS += -std=c++17 -ffunction-sections -fdata-sections -flto
-TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed -flto
+	-DWEBUI=ON \
+	-DQT_ADDITIONAL_PACKAGES_PREFIX_PATH=$(STAGING_DIR_HOSTPKG)
 
 define Package/qBittorrent-Enhanced-Edition/install
 	$(INSTALL_DIR) $(1)/usr/bin
