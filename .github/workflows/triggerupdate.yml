@@ -1,10 +1,10 @@
 
-name: Trigger Update
+name: Trigger Update Branch QT6
 
 on:
   push:
     paths:
-      - '.github\workflows\autoupdate.yml'
+      - '.github\workflows\triggerupdate.yml'
       - 'update.sh'
   watch:
     types: started
