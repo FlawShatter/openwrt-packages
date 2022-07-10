@@ -24,11 +24,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [main]
+        target: [qt6]
 
     steps:
     - name: Checkout
-      uses: actions/checkout@main
+      uses: actions/checkout@qt6
 
     - name: Initialization environment
       env:
@@ -64,7 +64,7 @@ jobs:
 
 
     - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
+      uses: GitRML/delete-workflow-runs@qt6
       with:
         retain_days: 1
         keep_minimum_runs: 0
