@@ -68,7 +68,7 @@ git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall -b packages pa
 git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall -b luci openwrt-passwall && mvdir openwrt-passwall
 git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall2 && mvdir openwrt-passwall2
 # my-diy仓库
-git clone --depth 1 https://github.com/hyy-666/my-diy && mvdir my-diy
+git clone --depth 1 https://github.com/hyy-666/my-diy -b qt6 && mvdir my-diy
 rm -rf ./luci-app-eqos
 # eqos
 git clone --depth 1 https://github.com/TorBoxCode/luci-app-eqos luci-app-eqos
