@@ -23,37 +23,42 @@ HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/qttools-everywhere-src-$(PKG_VERSION)
 PKG_MAINTAINER:=Krypton Lee <jun.k.lee199410@outlook.com>
 PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=COPYING
-PKG_CPE_ID:=cpe:/a:qt:qt
 
-HOST_BUILD_DEPENDS:=qt6base/host libxml2/host
-HOST_BUILD_PARALLEL:=1
 PKG_HOST_ONLY:=1
+HOST_BUILD_DEPENDS:=qt6base/host
+HOST_BUILD_PARALLEL:=1
 
-include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
+include $(INCLUDE_DIR)/package.mk
 
 define Package/qt6tools
-  SECTION:=utils
-  CATEGORY:=Utilities
+  SECTION:=libs
+  CATEGORY:=Libraries
   SUBMENU:=Qt6
   TITLE:=Qt6 Tools
   URL:=http://qt-project.org
   HIDDEN:=1
 endef
 
-CMAKE_HOST_OPTIONS+= \
-	-DINPUT_assistant=no \
-	-DINPUT_designer=no \
-	-DINPUT_clang=no \
-	-DINPUT_distancefieldgenerator=no \
-	-DINPUT_kmap2qmap=no \
-	-DINPUT_pixeltool=no \
-	-DINPUT_qdbus=no \
-	-DINPUT_qev=no \
-	-DINPUT_qtattributionsscanner=no \
-	-DINPUT_qtplugininfo=no \
-	-DINPUT_qtdiag=no
+HOST_CONFIGURE_ARGS := \
+        -no-feature-assistant \
+        -no-feature-designer \
+        -no-feature-distancefieldgenerator \
+        -no-feature-kmap2qmap \
+        -no-feature-pixeltool \
+        -no-feature-qdbus \
+        -no-feature-qev \
+        -no-feature-qtattributionsscanner \
+        -no-feature-qtplugininfo \
+        -no-feature-qtdiag
+
+define Host/Configure
+	(cd $(HOST_BUILD_DIR); \
+		$(STAGING_DIR_HOSTPKG)/bin/qt-configure-module . $(HOST_CONFIGURE_ARGS) \
+	)
+endef
 
 $(eval $(call BuildPackage,qt6tools))
 $(eval $(call HostBuild))
+
