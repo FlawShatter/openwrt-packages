@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libyaml-cpp
-PKG_VERSION:=0.7.0
-PKG_RELEASE:=1
 
-PKG_SOURCE:=yaml-cpp-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/jbeder/yaml-cpp/tar.gz/yaml-cpp-$(PKG_VERSION)?
-PKG_HASH:=43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3
-PKG_BUILD_DIR:=$(BUILD_DIR)/yaml-cpp-yaml-cpp-$(PKG_VERSION)
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/jbeder/yaml-cpp
+PKG_SOURCE_DATE:=2022-06-01
+PKG_SOURCE_VERSION:=c73ee34704c512ebe915b283645aefa9f424a22f
+PKG_MIRROR_HASH:=3fb0a39a77013697e1fd6d80d3a1d2e94474d2e39281543e44f2a54e9583b2cf
+
 
 PKG_MAINTAINER:= Steven Hessing <steven.hessing@gmail.com>
 PKG_LICENSE:=MIT
