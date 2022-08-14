@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=naiveproxy
 PKG_VERSION:=104.0.5112.79-2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/klzgrad/naiveproxy/tar.gz/v$(PKG_VERSION)?
@@ -19,7 +19,6 @@ PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 ifneq ($(wildcard $(TOPDIR)/feeds/packages/devel/ninja/ninja.mk),)
 PKG_BUILD_DEPENDS+= ninja/host
 endif
-NINJA ?= ninja
 PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
 
@@ -130,9 +129,9 @@ endef
 
 define Build/Compile
 	$(if $(CONFIG_PACKAGE_naiveproxy), \
-		+$(NINJA) -C "$(PKG_BUILD_DIR)/src/out/Release" naive)
+		ninja -C "$(PKG_BUILD_DIR)/src/out/Release" naive)
 	$(if $(CONFIG_PACKAGE_libcronet), \
-		+$(NINJA) -C "$(PKG_BUILD_DIR)/src/out/Release" cronet)
+		ninja -C "$(PKG_BUILD_DIR)/src/out/Release" cronet)
 endef
 
 define Build/InstallDev
