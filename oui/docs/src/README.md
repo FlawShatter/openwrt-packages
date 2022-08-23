@@ -1,6 +1,6 @@
 ---
 home: true
-title: oui
+heroImage: /images/hero.png
 actions:
   - text: 快速上手
     link: /guide/
@@ -30,13 +30,17 @@ footer: MIT Licensed | Copyright © 2022 Jianhui Zhao <zhaojh329@gmail.com>
   },
   {
     url: 'https://www.iyunlink.com',
-    logo: 'https://www.iyunlink.com/upload/202007/1595823908.png'
+    logo: 'https://www.iyunlink.com/upload/202208/1661233625.png'
   },
   {
     url: 'https://forgotfun.org',
     title: '佐须之男'
   }
 ]"/>
+
+:::danger
+本项目可免费用于非商业用途，二次开发需注明出处或者购买商业授权。
+:::
 
 <iframe src="https://ghbtns.com/github-btn.html?user=zhaojh329&repo=oui&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
 <iframe src="https://ghbtns.com/github-btn.html?user=zhaojh329&repo=oui&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
