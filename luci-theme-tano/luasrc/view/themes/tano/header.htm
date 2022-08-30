@@ -28,10 +28,13 @@ http.prepare_content("text/html")
     <title>
       <%= striptags( (boardinfo.hostname or "?") .. ( (node and node.title) and ' - ' .. translate(node.title) or '')) %> - LuCI
     </title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
-    <link rel="stylesheet" href="<%= media %>/cascade.css" />
-    <script src="<%=url('admin/translations', luci.i18n.context.lang)%><%# ?v=PKG_VERSION %>"></script>
-    <script type="text/javascript" src="<%= resource %>/cbi.js"></script>
+    <meta name="application-name" content="OpenWrt Wireless Freedom" />
+    <meta name="description" content="OpenWrt Wireless Freedom" />
+    <link rel="stylesheet" href="<%= media %>/cascade.css?v=unknown" />
+    <script src="<%=url('admin/translations', luci.i18n.context.lang)%>?v=unknown"></script>
+    <script type="text/javascript" src="<%= resource %>/cbi.js?v=unknown"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
         L.require('ui').then(function(ui) {
@@ -57,7 +60,8 @@ http.prepare_content("text/html")
         });
       });
     </script>
-    <link rel="icon" href="<%= media %>/favicon.ico">
+    <link rel="shortcut icon" href="<%= media %>/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="<%= media %>/apple-touch-icon.png">
   </head>
   <body data-path="<%=body_data_path%>">
     <div class="header">
