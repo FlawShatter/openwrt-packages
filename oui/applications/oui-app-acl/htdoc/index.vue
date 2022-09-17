@@ -92,9 +92,11 @@ export default {
     addGroup() {
       let group = ''
       this.$dialog.create({
+        autoFocus: false,
         title: this.$t('Add group'),
-        content: () => h('input', {
-          onChange: e => group = e.target.value
+        content: () => h(this.$oui.components['NInput'], {
+          placeholder: '',
+          'on-update:value': value => group = value
         }),
         positiveText: this.$t('OK'),
         onPositiveClick: () => {
@@ -103,10 +105,10 @@ export default {
             return
 
           this.allAcls[group] = {
-            rpc: { matchs: [ '*' ] },
-            menu: { matchs: [ '*' ] },
-            ubus: { matchs: [ '*' ] },
-            uci: { matchs: [ '*' ] }
+            rpc: { matchs: [ '.+' ] },
+            menu: { matchs: [ '.+' ] },
+            ubus: { matchs: [ '.+' ] },
+            uci: { matchs: [ '.+' ] }
           }
 
           this.group = group
