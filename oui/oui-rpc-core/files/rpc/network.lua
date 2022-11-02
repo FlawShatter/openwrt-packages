@@ -52,7 +52,7 @@ local function get_networks_by_route(target, mask)
     local r = {}
 
     for _, network in ipairs(networks) do
-        for _, route in ipairs(network.route) do
+        for _, route in ipairs(network.route or {}) do
             if route.target == target and route.mask == mask then
                 r[#r + 1] = network
                 break
