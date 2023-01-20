@@ -8,11 +8,17 @@ msgstr "运行中"
 msgid "MultiSD_Lite"
 msgstr "MultiSD_Lite"
 
+msgid "Multi Stream daemon Lite"
+msgstr "组播转换 Lite"
+
+msgid "The lightweight version of Multi Stream daemon (msd) Program for organizing IP TV streaming on the network via HTTP."
+msgstr "Multi Stream daemon (msd) 程序的轻量级版本，用于通过 HTTP 管理网络上的 IP TV 流。"
+
 msgid "Add instance"
 msgstr "添加实例"
 
 msgid "Enable"
-msgstr "启动"
+msgstr "启用"
 
 msgid "Bind address"
 msgstr "绑定地址"
@@ -20,35 +26,38 @@ msgstr "绑定地址"
 msgid "Source interface"
 msgstr "源接口"
 
-msgid "Disable"
-msgstr "关闭"
-
 msgid "For multicast receive."
-msgstr "用于多播接收。"
+msgstr "用于接收组播流。"
 
 msgid "Worker threads"
 msgstr "工作线程"
 
-msgid "0 = auto"
-msgstr "0 = 自动分配"
+msgid "0 = auto."
+msgstr "保留为 0 以自动检测。"
 
 msgid "Bind threads to CPUs"
-msgstr "CPU线程"
+msgstr "绑定线程到 CPU"
 
 msgid "Disconnect slow clients"
 msgstr "断开慢速客户端"
+
+msgid "Pre cache size"
+msgstr "预缓存大小"
 
 msgid "Ring buffer size"
 msgstr "环形缓冲区大小"
 
 msgid "Stream receive ring buffer size."
-msgstr "流接收环缓冲区大小"
+msgstr "流接收环形缓冲区大小。"
+
+msgid "Receive buffer size"
+msgstr "接收缓冲区大小"
 
 msgid "Multicast receive socket buffer size."
-msgstr "多播接收套接字缓冲区大小"
+msgstr "组播接收套接字缓冲区大小。"
 
 msgid "Receive timeout"
 msgstr "接收超时"
 
 msgid "Multicast receive timeout."
-msgstr "组播接收超时"
+msgstr "组播接收超时。"
