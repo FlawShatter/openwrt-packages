@@ -15,7 +15,7 @@ endef
 define Package/mysettings
 $(call Package/mysettings/Default)
   TITLE:=my diy.
-  DEPENDS:=+nano-plus +vim-fuller +luci-app-natter +luci-app-iptvhelper +luci-app-pgyvpn +luci-app-zerotier +luci-app-vnstat
+  DEPENDS:=+nano-plus +vim-fuller +luci-app-natter +luci-app-iptvhelper +luci-app-pgyvpn +luci-app-zerotier +luci-app-vnstat +luci-app-ttyd
 endef
 
 define Package/mysettings-router
@@ -37,7 +37,6 @@ $(call Package/mysettings/Default)
   +@PACKAGE_luci-app-unblockmusic_INCLUDE_UnblockNeteaseMusic_Go \
   +@PACKAGE_luci-app-unblockmusic_INCLUDE_UnblockNeteaseMusic_NodeJS \
   +luci-app-turboacc \
-  +@PACKAGE_luci-app-turboacc_INCLUDE_OFFLOADING \
   +@PACKAGE_luci-app-turboacc_INCLUDE_BBR_CCA \
   +@PACKAGE_luci-app-turboacc_INCLUDE_PDNSD \
   +@PACKAGE_luci-app-turboacc_INCLUDE_DNSFORWARDER \
