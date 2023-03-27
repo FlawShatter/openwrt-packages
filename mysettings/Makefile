@@ -33,15 +33,14 @@ $(call Package/mysettings/Default)
   +luci-app-vsftpd +luci-app-webadmin +luci-app-wolplus +luci-app-wrtbwmon \
   +luci-app-ipsec-vpnd +luci-app-openvpn +luci-app-openvpn-server +luci-app-privoxy \
   +luci-app-polipo +luci-app-tinyproxy +luci-app-phtunnel +luci-app-poweroff \
+  +luci-theme-argon +luci-theme-bootstrap +luci-theme-darkmatter +luci-theme-design \
+  +luci-theme-material +luci-theme-neobird +ipv6helper\
   +luci-app-unblockmusic \
   +@PACKAGE_luci-app-unblockmusic_INCLUDE_UnblockNeteaseMusic_Go \
   +@PACKAGE_luci-app-unblockmusic_INCLUDE_UnblockNeteaseMusic_NodeJS \
   +luci-app-turboacc \
   +@PACKAGE_luci-app-turboacc_INCLUDE_BBR_CCA \
-  +@PACKAGE_luci-app-turboacc_INCLUDE_PDNSD \
-  +@PACKAGE_luci-app-turboacc_INCLUDE_DNSFORWARDER \
-  +@PACKAGE_luci-app-turboacc_INCLUDE_DNSPROXY \
-  +luci-theme-argon +luci-theme-bootstrap +luci-theme-darkmatter +luci-theme-design +luci-theme-material +luci-theme-neobird
+  +@PACKAGE_luci-app-turboacc_INCLUDE_PDNSD
 endef
 
 define Package/mysettings-proxy

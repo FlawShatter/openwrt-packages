@@ -5,10 +5,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quickjspp
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/ftk/quickjspp
+PKG_SOURCE_URL:=https://github.com/ftk/quickjspp.git
 PKG_SOURCE_DATE:=2022-07-22
 PKG_SOURCE_VERSION:=9cee4b4d27271d54b95f6f42bfdc534ebeaaeb72
 PKG_MIRROR_HASH:=1d23111923565d8f125ca52386299d7e497328765a30d677f9437687470c89a4
@@ -35,6 +35,7 @@ define Package/$(PKG_NAME)/description
   Javascript engine into your program.
 endef
 
+TARGET_CFLAGS += -DONLY_FE_TONEAREST
 define Build/Install
 	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/quickjs/libquickjs.a $(PKG_INSTALL_DIR)/usr/lib/
