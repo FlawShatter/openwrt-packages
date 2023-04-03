@@ -45,37 +45,26 @@ $(call Package/mysettings/Default)
   TITLE:=Proxy packages
   DEPENDS:=+luci-app-autoipsetadder +luci-app-wireguard \
   +luci-app-passwall \
-  +@PACKAGE_luci-app-passwall_Iptables_Transparent_Proxy \
   +@PACKAGE_luci-app-passwall_INCLUDE_Brook \
   +@PACKAGE_luci-app-passwall_INCLUDE_ChinaDNS_NG \
-  +@PACKAGE_luci-app-passwall_INCLUDE_Haproxy \
   +@PACKAGE_luci-app-passwall_INCLUDE_Hysteria \
   +@PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy \
-  +@PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Client \
-  +@PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Server \
   +@PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client \
   +@PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server \
-  +@PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client \
   +@PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Server \
-  +@PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs \
   +@PACKAGE_luci-app-passwall_INCLUDE_Trojan_GO \
-  +@PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus \
-  +@PACKAGE_luci-app-passwall_INCLUDE_V2ray \
   +@PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata \
   +@PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin \
   +@PACKAGE_luci-app-passwall_INCLUDE_Xray \
   +luci-app-ssr-plus \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server \
-  +@PACKAGE_luci-app-ssr-plus_INCLUDE_ChinaDNS_NG \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Hysteria \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_IPT2Socks \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Kcptun \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_NaiveProxy \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Redsocks2 \
-  +@PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_V2ray_Plugin \
-  +@PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Libev_Client \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Libev_Server \
   +@PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan
 endef
