@@ -175,9 +175,18 @@ aria2_start() {
 		_err "Can't create config dir: $config_dir"
 		return 1
 	}
-	cp -rf /usr/share/aria2/* $config_dir
-	_create_file "$session_file" "$config_file" "$config_file_tmp" || {
-		_err "Can't create files: $session_file, $config_file, $config_file_tmp"
+
+	# if config_dir the same with script_dir not copy it.
+	[ "$config_dir" = "/usr/share/aria2" ] || cp -rf /usr/share/aria2/* $config_dir
+
+	# create session file if not exist.
+	[ -f $session_file ] || _create_file $session_file || {
+		_err "Can't create files: $session_file"
+		return 1
+	}
+
+	_create_file "$config_file" "$config_file_tmp" || {
+		_err "Can't create files: $config_file, $config_file_tmp"
 		return 1
 	}
 
@@ -313,6 +322,27 @@ aria2_start() {
 	config_list_foreach "$section" "header" append_header
 	config_list_foreach "$section" "extra_settings" append_setting
 
+	# fix filename errors
+	append_setting "content-disposition-default-utf8=true"
+
+	# retry at more event
+	append_setting "retry-on-400=true"
+	append_setting "retry-on-403=true"
+	append_setting "retry-on-406=true"
+
+	# auto rename file
+	append_setting "auto-file-renaming=true"
+
+	# allow piece length change
+	append_setting "allow-piece-length-change=true"
+
+	# let retry wait 10 secend
+	append_setting "retry-wait=10"
+
+	# default add auto clean when remove file
+	append_setting "on-download-complete=$config_dir/clean.sh"
+	append_setting "on-download-stop=$config_dir/delete.sh"
+
 	sed '/^$/d' "$config_file_tmp" >"$config_file"
 	rm -f "$config_file_tmp"
 
@@ -344,10 +374,10 @@ aria2_start() {
 		procd_set_param user "$user"
 
 	procd_add_jail "$NAME.$section" log
-	procd_add_jail_mount "$config_file"
+	procd_add_jail_mount "$ca_certificate" "$certificate" "$rpc_certificate" "$rpc_private_key"
 	procd_add_jail_mount_rw "$dir" "$config_dir" "$log"
 	chmod -R +x $config_dir
-	$config_dir/tracker.sh $config_file
+	sh $config_dir/tracker.sh $config_file >/dev/null 2>&1
 	procd_close_instance
 	sed -i '/tracker.sh/d' /etc/crontabs/root >/dev/null 2>&1
 	echo "* */6 * * * $config_dir/tracker.sh $config_file RPC" >> /etc/crontabs/root
