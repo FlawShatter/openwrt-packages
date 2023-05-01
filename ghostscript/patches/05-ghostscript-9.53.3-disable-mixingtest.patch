@@ -1,0 +1,20 @@
+diff -Naru ghostscript-9.53.3_orig/configure ghostscript-9.53.3/configure
+--- ghostscript-9.53.3_orig/configure	2020-10-28 10:28:58.014978061 +0900
++++ ghostscript-9.53.3/configure	2020-10-28 10:47:56.787532264 +0900
+@@ -8837,11 +8837,11 @@
+ 
+ # Skip this check for the recursive configure call.
+ # Not relevant for AUX tools.
+-if test x"$enable_auxtools_only" != x"yes" ; then
+-  if test x"$ENABLETIFF" != x"" && test x"$SHARE_LIBTIFF" != x"$SHARE_LIBJPEG" ; then
+-    as_fn_error $? "Mixing local libtiff with shared libjpeg not supported" "$LINENO" 5
+-  fi
+-fi
++# if test x"$enable_auxtools_only" != x"yes" ; then
++  # if test x"$ENABLETIFF" != x"" && test x"$SHARE_LIBTIFF" != x"$SHARE_LIBJPEG" ; then
++  #   as_fn_error $? "Mixing local libtiff with shared libjpeg not supported" "$LINENO" 5
++  # fi
++# fi
+ 
+ CGLAGS_STORE=$CFLAGS
+ CFLAGS=-Wno-misleading-indentation

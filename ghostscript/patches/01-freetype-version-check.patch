@@ -1,0 +1,22 @@
+diff -Naru ghostscript-9.52_orig/configure ghostscript-9.52/configure
+--- ghostscript-9.52_orig/configure	2020-03-19 17:22:25.000000000 +0900
++++ ghostscript-9.52/configure	2020-03-20 09:24:02.263437138 +0900
+@@ -7400,12 +7400,18 @@
+                  #if FREETYPE_MAJOR < 2
+                    FAIL
+                  #endif
++                 #if FREETYPE_MAJOR == 2
+                  #if FREETYPE_MINOR < 4
+                    FAIL
+                  #endif
++                 #endif
++                 #if FREETYPE_MAJOR == 2
++                 #if FREETYPE_MINOR == 4
+                  #if FREETYPE_PATCH < 2
+                    FAIL
+                  #endif
++                 #endif
++                 #endif
+                  return(0);
+ 
+   ;
