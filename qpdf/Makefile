@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qpdf
-PKG_VERSION:=4.0.1
+PKG_VERSION:=11.3.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
-PKG_MD5SUM:=093baece867a0a7e07774bd4008156b3
+PKG_MD5SUM:=195a02bdd0e02a668cb03cafab14ddff
 
 PKG_INSTALL:=1
 
@@ -23,7 +23,7 @@ define Package/qpdf
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=QPDF is a command-line program for transformations on PDF files.
-  DEPENDS:= +libpcre +zlib +libstdcpp
+  DEPENDS:= +libpcre +zlib +libstdcpp +libopenssl
   URL:=http://qpdf.sourceforge.net/
   SUBMENU:=Printing
 endef
