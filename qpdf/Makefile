@@ -23,7 +23,7 @@ define Package/qpdf
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=QPDF is a command-line program for transformations on PDF files.
-  DEPENDS:= +libpcre +zlib +libstdcpp +libopenssl
+  DEPENDS:= +libpcre +zlib +libstdcpp +libopenssl +libjpeg
   URL:=http://qpdf.sourceforge.net/
   SUBMENU:=Printing
 endef
@@ -36,14 +36,22 @@ or for people who just want to look at the innards of a PDF file to learn more
 about how they work.
 endef
 
-define Package/qpdf/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/
+define Build/Configure
+	(cd $(PKG_BUILD_DIR); ./autogen.sh );
+	$(call Build/Configure/Default, \
+			--enable-crypto-gnutls \
+			--with-random=/dev/urandom \
+			)
 endef
 
 define Build/Compile
 	$(call Build/Compile/Default, LIBTOOL="./libtool --tag=CXX")
+endef
+
+define Package/qpdf/install
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/
 endef
 
 define Build/InstallDev
