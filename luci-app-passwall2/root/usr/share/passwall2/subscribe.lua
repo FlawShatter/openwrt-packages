@@ -23,6 +23,7 @@ uci:revert(appname)
 
 local has_ss = api.is_finded("ss-redir")
 local has_ss_rust = api.is_finded("sslocal")
+local has_singbox = api.is_finded("sing-box")
 local has_v2ray = api.is_finded("v2ray")
 local has_xray = api.is_finded("xray")
 local allowInsecure_default = true
@@ -391,6 +392,9 @@ local function processData(szType, content, add_mode, add_from)
 		if has_xray then
 			result.type = 'Xray'
 		end
+		if has_singbox then
+			result.type = 'sing-box'
+		end
 		result.address = info.add
 		result.port = info.port
 		result.protocol = 'vmess'
@@ -532,6 +536,9 @@ local function processData(szType, content, add_mode, add_from)
 					if method:lower() == "chacha20-poly1305" then
 						result.method = "chacha20-ietf-poly1305"
 					end
+				elseif ss_aead_type_default == "sing-box" and has_singbox and not result.plugin then
+					result.type = 'sing-box'
+					result.protocol = 'shadowsocks'
 				elseif ss_aead_type_default == "v2ray" and has_v2ray and not result.plugin then
 					result.type = 'V2ray'
 					result.protocol = 'shadowsocks'
@@ -560,6 +567,9 @@ local function processData(szType, content, add_mode, add_from)
 		result.type = 'V2ray'
 		if has_xray then
 			result.type = 'Xray'
+		end
+		if has_singbox then
+			result.type = 'sing-box'
 		end
 		result.protocol = 'trojan'
 		if content:find("@") then
@@ -625,6 +635,9 @@ local function processData(szType, content, add_mode, add_from)
 		result.type = 'V2ray'
 		if has_xray then
 			result.type = 'Xray'
+		end
+		if has_singbox then
+			result.type = 'sing-box'
 		end
 		result.protocol = "vless"
 		local alias = ""
@@ -699,10 +712,11 @@ local function processData(szType, content, add_mode, add_from)
 			
 			result.encryption = params.encryption or "none"
 
+			result.flow = params.flow or nil
+
 			result.tls = "0"
 			if params.security == "tls" or params.security == "reality" then
 				result.tls = "1"
-				result.tlsflow = params.flow or nil
 				result.tls_serverName = (params.sni and params.sni ~= "") and params.sni or params.host
 				result.fingerprint = (params.fp and params.fp ~= "") and params.fp or "chrome"
 				if params.security == "reality" then
