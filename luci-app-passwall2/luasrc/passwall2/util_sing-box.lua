@@ -301,11 +301,14 @@ function gen_outbound(flag, node, tag, proxy_table)
 				udp_relay_mode = node.tuic_udp_relay_mode or "native",
 				udp_over_stream = false,
 				zero_rtt_handshake = (node.tuic_zero_rtt_handshake == "1") and true or false,
-				heartbeat = tonumber(node.tuic_heartbeat),
+				heartbeat = node.tuic_heartbeat .. "s",
 				tls = {
 					enabled = true,
 					server_name = node.tls_serverName,
 					insecure = (node.tls_allowInsecure == "1") and true or false,
+					alpn = (node.tuic_alpn and node.tuic_alpn ~= "") and {
+						node.tuic_alpn
+					} or nil,
 				},
 			}
 		end
@@ -548,6 +551,9 @@ function gen_config_server(node)
 				enabled = true,
 				certificate_path = node.tls_certificateFile,
 				key_path = node.tls_keyFile,
+				alpn = (node.tuic_alpn and node.tuic_alpn ~= "") and {
+					node.tuic_alpn
+				} or nil,
 			}
 		}
 	end
