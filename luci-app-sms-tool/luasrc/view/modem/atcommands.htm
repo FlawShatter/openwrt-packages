@@ -1,7 +1,7 @@
 <%+header%>
 
 <!--
--- Copyright 2020-2022 Rafał Wabik (IceG) - From eko.one.pl forum
+-- Copyright 2020-2021 Rafał Wabik (IceG) - From eko.one.pl forum
 -- Licensed to the GNU General Public License v3.0.
 -->
 
@@ -12,30 +12,30 @@
 	<div class="table" width="100%">
 
 		<div class="tr">
-			<div class="td left"><%:User AT Commands%>:</div>
+			<div class="td left" width="25%"><%:User AT Commands%>:</div>
 
-			<div class="td left";">
+			<div class="td left" style="width:50%;">
 				<select name="ussd" id="pl" onclick="copyFunction()">
 
  				</select>
 			</div>
-			<div class="td left""></div>
+			<div class="td left" style="width:50%;"></div>
 			</div>
 
 		<div class="tr">
-			<div class="td left" ><%:Command to send%>:</div>
-			<div class="td left" ><input type="text" id="code"></div>
+			<div class="td left" style="width:25%;"><%:Command to send%>:</div>
+			<div class="td left" ><input type="text" id="code" required size="20" ></div>
 		</div>
 
 	</div>
 
 	<div class="table" width="100%">
-		<div class="td left";"><%:Reply%>:
+		<div class="td left" style="width:25%;"><%:Reply%>:
 		<p>
-		<pre id="odp" style="visibility: hidden;"></pre></div>
+		<pre id="odp" style="visibility: hidden; width:75%;"></pre></div>
 
 		<div class="tr cbi-rowstyle-2">
-		<div class="td right"><input type="button" style="margin-right: 5%"; id="sendcmd" class="btn cbi-button cbi-button-neutral" value="<%:Send Command%>" /></div>
+		<div class="td right"><input type="button" style="margin-right: 26%"; id="sendcmd" class="btn cbi-button cbi-button-neutral" value="<%:Send Command%>" /></div>
 		</div>
 
 	</div>
@@ -55,7 +55,8 @@ window.onload = function readUSER() {
 
 					for(var d=0;d<=count;d++)
 						{
-    			    				var opt = document.createElement('option');
+    			    		var opt = document.createElement('option');
+
 							var s = json[d].atu;
 							var fields = s.split(/;/);
 							var name = fields[0];

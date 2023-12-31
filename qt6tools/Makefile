@@ -1,0 +1,64 @@
+#
+# Copyright (C) 2022 Krypton Lee <jun.k.lee199410@outlook.com>
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+# 
+
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=qt6tools
+PKG_BASE:=6.3
+PKG_BUGFIX:=1
+PKG_VERSION:=$(PKG_BASE).$(PKG_BUGFIX)
+PKG_RELEASE:=$(AUTORELEASE)
+
+PKG_SOURCE:=qttools-everywhere-src-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://mirrors.tencent.com/qt/archive/qt/$(PKG_BASE)/$(PKG_VERSION)/submodules/ \
+		  https://mirrors.aliyun.com/qt/archive/qt/$(PKG_BASE)/$(PKG_VERSION)/submodules/ \
+		  http://download.qt-project.org/archive/qt/$(PKG_BASE)/$(PKG_VERSION)/submodules/
+PKG_HASH:=c412750f2aa3beb93fce5f30517c607f55daaeb7d0407af206a8adf917e126c1
+HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/qttools-everywhere-src-$(PKG_VERSION)
+
+PKG_MAINTAINER:=Krypton Lee <jun.k.lee199410@outlook.com>
+PKG_LICENSE:=LGPL-2.1
+PKG_LICENSE_FILES:=COPYING
+
+PKG_HOST_ONLY:=1
+HOST_BUILD_DEPENDS:=qt6base/host
+HOST_BUILD_PARALLEL:=1
+
+include $(INCLUDE_DIR)/host-build.mk
+include $(INCLUDE_DIR)/cmake.mk
+include $(INCLUDE_DIR)/package.mk
+
+define Package/qt6tools
+  SECTION:=libs
+  CATEGORY:=Libraries
+  SUBMENU:=Qt6
+  TITLE:=Qt6 Tools
+  URL:=http://qt-project.org
+  HIDDEN:=1
+endef
+
+HOST_CONFIGURE_ARGS := \
+        -no-feature-assistant \
+        -no-feature-designer \
+        -no-feature-distancefieldgenerator \
+        -no-feature-kmap2qmap \
+        -no-feature-pixeltool \
+        -no-feature-qdbus \
+        -no-feature-qev \
+        -no-feature-qtattributionsscanner \
+        -no-feature-qtplugininfo \
+        -no-feature-qtdiag
+
+define Host/Configure
+	(cd $(HOST_BUILD_DIR); \
+		$(STAGING_DIR_HOSTPKG)/bin/qt-configure-module . $(HOST_CONFIGURE_ARGS) \
+	)
+endef
+
+$(eval $(call BuildPackage,qt6tools))
+$(eval $(call HostBuild))
+
