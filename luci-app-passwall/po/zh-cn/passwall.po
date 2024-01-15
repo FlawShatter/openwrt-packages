@@ -70,8 +70,8 @@ msgstr "谷歌连接"
 msgid "GitHub Connection"
 msgstr "GitHub连接"
 
-msgid "Instagram Connection"
-msgstr "Instagram连接"
+msgid "Youtube Connection"
+msgstr "油管连接"
 
 msgid "Node Check"
 msgstr "节点检测"
