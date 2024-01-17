@@ -1,0 +1,7 @@
+config settings
+	option enabled '0'
+	option acceptRoutes '0'
+	option advertiseRoutes ''
+	option hostname ''
+	option loginServer ''
+	option authKey ''
