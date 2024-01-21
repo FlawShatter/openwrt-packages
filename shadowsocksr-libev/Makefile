@@ -60,6 +60,10 @@ CONFIGURE_ARGS += \
 TARGET_CFLAGS += -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
+ifneq (filter((GCC_MAJOR_VERSION),12 13),)
+  TARGET_CFLAGS += -Wno-error=dangling-pointer -Wno-error=maybe-uninitialized
+endif
+
 $(foreach component,$(SHADOWSOCKSR_COMPONENTS), \
   $(eval $(call BuildPackage,shadowsocksr-libev-ssr-$(component))) \
 )
