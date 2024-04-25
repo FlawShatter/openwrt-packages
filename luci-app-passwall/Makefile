@@ -6,9 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-passwall
-PKG_VERSION:=4.75-3
+PKG_VERSION:=4.77-4
 PKG_RELEASE:=
-PKG_VERSION:=$(PKG_VERSION)-smartdns-dev
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
@@ -34,8 +33,9 @@ PKG_CONFIG_DEPENDS:= \
 LUCI_TITLE:=LuCI support for PassWall
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-nohup +curl \
-	+chinadns-ng +dns2socks +dns2tcp +ip-full +libuci-lua +lua +luci-compat +luci-lib-jsonc \
-	+microsocks +resolveip +tcping +unzip
+	+chinadns-ng +dns2socks +dns2tcp +dnsmasq-full +ip-full \
+	+libuci-lua +lua +luci-compat +luci-lib-jsonc \
+	+microsocks +resolveip +tcping
 
 define Package/$(PKG_NAME)/config
 menu "Configuration"
@@ -43,7 +43,6 @@ menu "Configuration"
 
 config PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy
 	bool "Iptables Transparent Proxy"
-	select PACKAGE_dnsmasq-full
 	select PACKAGE_ipset
 	select PACKAGE_ipt2socks
 	select PACKAGE_iptables
@@ -57,7 +56,6 @@ config PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy
 
 config PACKAGE_$(PKG_NAME)_Nftables_Transparent_Proxy
 	bool "Nftables Transparent Proxy"
-	select PACKAGE_dnsmasq-full
 	select PACKAGE_ipt2socks
 	select PACKAGE_nftables
 	select PACKAGE_kmod-nft-socket
@@ -150,6 +148,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
 	select PACKAGE_xray-core
+	select PACKAGE_unzip
 	default y if aarch64||arm||i386||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray_Plugin
@@ -172,6 +171,7 @@ define Package/$(PKG_NAME)/conffiles
 /usr/share/passwall/rules/lanlist_ipv4
 /usr/share/passwall/rules/lanlist_ipv6
 /usr/share/passwall/rules/domains_excluded
+/www/luci-static/resources/qrcode.min.js
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk

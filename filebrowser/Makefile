@@ -26,7 +26,7 @@ GO_PKG_LDFLAGS_X:= \
 	$(GO_PKG)/version.Version=v$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
-include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
+include ../../lang/golang/golang-package.mk
 
 define Package/filebrowser
   SECTION:=utils

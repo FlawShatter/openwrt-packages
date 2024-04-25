@@ -29,7 +29,7 @@ local has_singbox = api.finded_com("singbox")
 local has_xray = api.finded_com("xray")
 local has_hysteria2 = api.finded_com("hysteria")
 local allowInsecure_default = nil
-local ss_aead_type_default = uci:get(appname, "@global_subscribe[0]", "ss_aead_type") or "shadowsocks-libev"
+local ss_type_default = uci:get(appname, "@global_subscribe[0]", "ss_type") or "shadowsocks-libev"
 local trojan_type_default = uci:get(appname, "@global_subscribe[0]", "trojan_type") or "trojan-plus"
 local vmess_type_default = uci:get(appname, "@global_subscribe[0]", "vmess_type") or "xray"
 local vless_type_default = uci:get(appname, "@global_subscribe[0]", "vless_type") or "xray"
@@ -227,9 +227,8 @@ do
 	end)
 
 	uci:foreach(appname, "nodes", function(node)
+		local node_id = node[".name"]
 		if node.protocol and node.protocol == '_shunt' then
-			local node_id = node[".name"]
-
 			local rules = {}
 			uci:foreach(appname, "shunt_rules", function(e)
 				if e[".name"] and e.remarks then
@@ -262,7 +261,6 @@ do
 				end
 			end
 		elseif node.protocol and node.protocol == '_balancing' then
-			local node_id = node[".name"]
 			local nodes = {}
 			local new_nodes = {}
 			if node.balancing_node then
@@ -274,7 +272,7 @@ do
 						remarks = node,
 						set = function(o, server)
 							for kk, vv in pairs(CONFIG) do
-								if (vv.remarks == "负载均衡节点列表" .. node_id) then
+								if (vv.remarks == "Xray负载均衡节点[" .. node_id .. "]列表") then
 									table.insert(vv.new_nodes, server)
 								end
 							end
@@ -283,13 +281,12 @@ do
 				end
 			end
 			CONFIG[#CONFIG + 1] = {
-				remarks = "负载均衡节点列表" .. node_id,
+				remarks = "Xray负载均衡节点[" .. node_id .. "]列表",
 				nodes = nodes,
 				new_nodes = new_nodes,
 				set = function(o)
 					for kk, vv in pairs(CONFIG) do
-						if (vv.remarks == "负载均衡节点列表" .. node_id) then
-							--log("刷新负载均衡节点列表")
+						if (vv.remarks == "Xray负载均衡节点[" .. node_id .. "]列表") then
 							uci:foreach(appname, "nodes", function(node2)
 								if node2[".name"] == node[".name"] then
 									local section = uci:section(appname, "nodes", node_id)
@@ -300,6 +297,42 @@ do
 					end
 				end
 			}
+
+			--后备节点
+			local currentNode = uci:get_all(appname, node_id) or nil
+			if currentNode and currentNode.fallback_node then
+				CONFIG[#CONFIG + 1] = {
+					log = true,
+					id = node_id,
+					remarks = "Xray负载均衡节点[" .. node_id .. "]后备节点",
+					currentNode = uci:get_all(appname, currentNode.fallback_node) or nil,
+					set = function(o, server)
+						uci:set(appname, node_id, "fallback_node", server)
+						o.newNodeId = server
+					end,
+					delete = function(o)
+						uci:delete(appname, node_id, "fallback_node")
+					end
+				}
+			end
+		else
+			--落地节点
+			local currentNode = uci:get_all(appname, node_id) or nil
+			if currentNode and currentNode.to_node then
+				CONFIG[#CONFIG + 1] = {
+					log = true,
+					id = node_id,
+					remarks = "节点[" .. node_id .. "]落地节点",
+					currentNode = uci:get_all(appname, currentNode.to_node) or nil,
+					set = function(o, server)
+						uci:set(appname, node_id, "to_node", server)
+						o.newNodeId = server
+					end,
+					delete = function(o)
+						uci:delete(appname, node_id, "to_node")
+					end
+				}
+			end
 		end
 	end)
 
@@ -537,48 +570,48 @@ local function processData(szType, content, add_mode, add_from)
 			result.method = method
 			result.password = password
 
-			local aead = false
-			for k, v in ipairs({"aes-128-gcm", "aes-256-gcm", "chacha20-poly1305", "chacha20-ietf-poly1305"}) do
-				if method:lower() == v:lower() then
-					aead = true
+			if ss_type_default == "shadowsocks-rust" and has_ss_rust then
+				result.type = 'SS-Rust'
+			end
+			if ss_type_default == "xray" and has_xray then
+				result.type = 'Xray'
+				result.protocol = 'shadowsocks'
+				result.transport = 'tcp'
+			end
+			if ss_type_default == "sing-box" and has_singbox then
+				result.type = 'sing-box'
+				result.protocol = 'shadowsocks'
+			end
+
+			if result.type == "SS-Rust" and method:lower() == "chacha20-poly1305" then
+				result.method = "chacha20-ietf-poly1305"
+			end
+
+			if result.type == "Xray" and method:lower() == "chacha20-ietf-poly1305" then
+				result.method = "chacha20-poly1305"
+			end
+
+			if result.plugin then
+				if result.type == 'Xray' then
+					--不支持插件
+					result.error_msg = "Xray不支持插件."
+				end
+				if result.type == "sing-box" then
+					result.plugin_enabled = "1"
 				end
 			end
-			if aead then
-				if ss_aead_type_default == "shadowsocks-libev" and has_ss then
-					result.type = "SS"
-				elseif ss_aead_type_default == "shadowsocks-rust" and has_ss_rust then
-					result.type = 'SS-Rust'
-					if method:lower() == "chacha20-poly1305" then
-						result.method = "chacha20-ietf-poly1305"
+
+			if result.type == "SS" then
+				local aead2022_methods = { "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305" }
+				local aead2022 = false
+				for k, v in ipairs(aead2022_methods) do
+					if method:lower() == v:lower() then
+						aead2022 = true
 					end
-				elseif ss_aead_type_default == "sing-box" and has_singbox and not result.plugin then
-					result.type = 'sing-box'
-					result.protocol = 'shadowsocks'
-				elseif ss_aead_type_default == "xray" and has_xray and not result.plugin then
-					result.type = 'Xray'
-					result.protocol = 'shadowsocks'
-					result.transport = 'tcp'
-					if method:lower() == "chacha20-ietf-poly1305" then
-						result.method = "chacha20-poly1305"
-					end
 				end
-			end
-			local aead2022 = false
-			for k, v in ipairs({"2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305"}) do
-				if method:lower() == v:lower() then
-					aead2022 = true
-				end
-			end
-			if aead2022 then
-				if ss_aead_type_default == "sing-box" and has_singbox and not result.plugin then
-					result.type = 'sing-box'
-					result.protocol = 'shadowsocks'
-				elseif ss_aead_type_default == "xray" and has_xray and not result.plugin then
-					result.type = 'Xray'
-					result.protocol = 'shadowsocks'
-					result.transport = 'tcp'
-				elseif has_ss_rust then
-					result.type = 'SS-Rust'
+				if aead2022 then
+					-- shadowsocks-libev 不支持2022加密
+					result.error_msg = "shadowsocks-libev 不支持2022加密."
 				end
 			end
 		end
@@ -601,7 +634,9 @@ local function processData(szType, content, add_mode, add_from)
 			local params = {}
 			for _, v in pairs(split(query[2], '&')) do
 				local t = split(v, '=')
-				params[string.lower(t[1])] = UrlDecode(t[2])
+				if #t > 1 then
+					params[string.lower(t[1])] = UrlDecode(t[2])
+				end
 			end
 			-- [2001:4860:4860::8888]:443
 			-- 8.8.8.8:443
@@ -845,7 +880,9 @@ local function processData(szType, content, add_mode, add_from)
 		local params = {}
 		for _, v in pairs(split(query[2], '&')) do
 			local t = split(v, '=')
-			params[string.lower(t[1])] = UrlDecode(t[2])
+			if #t > 1 then
+				params[string.lower(t[1])] = UrlDecode(t[2])
+			end
 		end
 		-- [2001:4860:4860::8888]:443
 		-- 8.8.8.8:443
@@ -898,13 +935,11 @@ local function processData(szType, content, add_mode, add_from)
 end
 
 local function curl(url, file, ua)
-	if not ua or ua == "" then
-		ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+	local curl_args = api.clone(api.curl_args)
+	if ua and ua ~= "" and ua ~= "curl" then
+		table.insert(curl_args, '--user-agent "' .. ua .. '"')
 	end
-	local args = {
-		"-skL", "--retry 3", "--connect-timeout 3", '--user-agent "' .. ua .. '"'
-	}
-	local return_code, result = api.curl_logic(url, file, args)
+	local return_code, result = api.curl_logic(url, file, curl_args)
 	return return_code
 end
 
@@ -1184,8 +1219,10 @@ local function parse_link(raw, add_mode, add_from)
 					end
 					-- log(result)
 					if result then
-						if not result.type then
-							log('丢弃节点:' .. result.remarks .. ",找不到可使用二进制.")
+						if result.error_msg then
+							log('丢弃节点: ' .. result.remarks .. ", 原因:" .. result.error_msg)
+						elseif not result.type then
+							log('丢弃节点: ' .. result.remarks .. ", 找不到可使用二进制.")
 						elseif (add_mode == "2" and is_filter_keyword(result.remarks)) or not result.address or result.remarks == "NULL" or result.address == "127.0.0.1" or
 								(not datatypes.hostname(result.address) and not (api.is_ip(result.address))) then
 							log('丢弃过滤节点: ' .. result.type .. ' 节点, ' .. result.remarks)
@@ -1193,7 +1230,8 @@ local function parse_link(raw, add_mode, add_from)
 							tinsert(node_list, result)
 						end
 					end
-				end, function ()
+				end, function (err)
+					--log(err)
 					log(v, "解析错误，跳过此节点。")
 				end
 			)
@@ -1252,9 +1290,9 @@ local execute = function()
 				filter_keyword_keep_list_default = value.filter_keep_list or {}
 				filter_keyword_discard_list_default = value.filter_discard_list or {}
 			end
-			local ss_aead_type = value.ss_aead_type or "global"
-			if ss_aead_type ~= "global" then
-				ss_aead_type_default = ss_aead_type
+			local ss_type = value.ss_type or "global"
+			if ss_type ~= "global" then
+				ss_type_default = ss_type
 			end
 			local trojan_type = value.trojan_type or "global"
 			if trojan_type ~= "global" then
@@ -1289,7 +1327,7 @@ local execute = function()
 			filter_keyword_mode_default = uci:get(appname, "@global_subscribe[0]", "filter_keyword_mode") or "0"
 			filter_keyword_discard_list_default = uci:get(appname, "@global_subscribe[0]", "filter_discard_list") or {}
 			filter_keyword_keep_list_default = uci:get(appname, "@global_subscribe[0]", "filter_keep_list") or {}
-			ss_aead_type_default = uci:get(appname, "@global_subscribe[0]", "ss_aead_type") or "shadowsocks-libev"
+			ss_type_default = uci:get(appname, "@global_subscribe[0]", "ss_type") or "shadowsocks-libev"
 			trojan_type_default = uci:get(appname, "@global_subscribe[0]", "trojan_type") or "trojan-plus"
 			vmess_type_default = uci:get(appname, "@global_subscribe[0]", "vmess_type") or "xray"
 			vless_type_default = uci:get(appname, "@global_subscribe[0]", "vless_type") or "xray"

@@ -10,7 +10,7 @@ jsonc = require "luci.jsonc"
 i18n = require "luci.i18n"
 
 appname = "passwall"
-curl_args = { "-skfL", "--connect-timeout 3", "--retry 3", "-m 60" }
+curl_args = { "-skfL", "--connect-timeout 3", "--retry 3" }
 command_timeout = 300
 OPENWRT_ARCH = nil
 DISTRIB_ARCH = nil
@@ -73,7 +73,7 @@ end
 
 function curl_proxy(url, file, args)
 	--使用代理
-	local socks_server = luci.sys.exec("[ -f /tmp/etc/passwall/TCP_SOCKS_server ] && echo -n $(cat /tmp/etc/passwall/TCP_SOCKS_server) || echo -n ''")
+	local socks_server = luci.sys.exec("[ -f /tmp/etc/passwall/acl/default/TCP_SOCKS_server ] && echo -n $(cat /tmp/etc/passwall/acl/default/TCP_SOCKS_server) || echo -n ''")
 	if socks_server ~= "" then
 		if not args then args = {} end
 		local tmp_args = clone(args)
@@ -820,7 +820,10 @@ function to_download(app_name, url, size)
 		end
 	end
 
-	local return_code, result = curl_logic(url, tmp_file, curl_args)
+	local _curl_args = clone(curl_args)
+	table.insert(_curl_args, "-m 60")
+
+	local return_code, result = curl_logic(url, tmp_file, _curl_args)
 	result = return_code == 0
 
 	if not result then
@@ -919,7 +922,7 @@ function to_move(app_name,file)
 		sys.call(cmd_rm_tmp)
 		return {
 			code = 1,
-			error = i18n.translate("The client file is not suitable for current device.")..app_name.."__"..bin_path
+			error = i18n.translate("The client file is not suitable for current device.") .. app_name .. "__" .. bin_path
 		}
 	end
 

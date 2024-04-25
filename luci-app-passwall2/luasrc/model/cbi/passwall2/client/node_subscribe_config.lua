@@ -5,23 +5,23 @@ local has_ss_rust = api.is_finded("sslocal")
 local has_singbox = api.finded_com("singbox")
 local has_xray = api.finded_com("xray")
 local has_hysteria2 = api.finded_com("hysteria")
-local ss_aead_type = {}
+local ss_type = {}
 local trojan_type = {}
 local vmess_type = {}
 local vless_type = {}
 local hysteria2_type = {}
 if has_ss then
 	local s = "shadowsocks-libev"
-	table.insert(ss_aead_type, s)
+	table.insert(ss_type, s)
 end
 if has_ss_rust then
 	local s = "shadowsocks-rust"
-	table.insert(ss_aead_type, s)
+	table.insert(ss_type, s)
 end
 if has_singbox then
 	local s = "sing-box"
 	table.insert(trojan_type, s)
-	table.insert(ss_aead_type, s)
+	table.insert(ss_type, s)
 	table.insert(vmess_type, s)
 	table.insert(vless_type, s)
 	table.insert(hysteria2_type, s)
@@ -29,7 +29,7 @@ end
 if has_xray then
 	local s = "xray"
 	table.insert(trojan_type, s)
-	table.insert(ss_aead_type, s)
+	table.insert(ss_type, s)
 	table.insert(vmess_type, s)
 	table.insert(vless_type, s)
 end
@@ -76,11 +76,11 @@ o:depends("filter_keyword_mode", "2")
 o:depends("filter_keyword_mode", "3")
 o:depends("filter_keyword_mode", "4")
 
-if #ss_aead_type > 0 then
-	o = s:option(ListValue, "ss_aead_type", translatef("%s Node Use Type", "SS AEAD"))
+if #ss_type > 0 then
+	o = s:option(ListValue, "ss_type", translatef("%s Node Use Type", "Shadowsocks"))
 	o.default = "global"
 	o:value("global", translate("Use global config"))
-	for key, value in pairs(ss_aead_type) do
+	for key, value in pairs(ss_type) do
 		o:value(value)
 	end
 end
@@ -141,6 +141,10 @@ o.default = 0
 o:depends("auto_update", true)
 
 o = s:option(Value, "user_agent", translate("User-Agent"))
-o.default = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+o.default = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0"
+o:value("curl")
+o:value("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0")
+o:value("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0")
+o:value("Passwall2/OpenWrt")
 
 return m

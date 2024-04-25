@@ -142,7 +142,7 @@ o:depends({ [option_name("tls")] = true })
 o = s:option(Value, option_name("reality_private_key"), translate("Private Key"))
 o:depends({ [option_name("reality")] = true })
 
-o = s:option(Value, option_name("reality_shortId"), translate("Short Id"))
+o = s:option(DynamicList, option_name("reality_shortId"), translate("Short Id"))
 o:depends({ [option_name("reality")] = true })
 
 o = s:option(Value, option_name("reality_dest"), translate("Dest"))
@@ -202,6 +202,7 @@ o:value("h2", "HTTP/2")
 o:value("ds", "DomainSocket")
 o:value("quic", "QUIC")
 o:value("grpc", "gRPC")
+o:value("httpupgrade", "HttpUpgrade")
 o:depends({ [option_name("protocol")] = "vmess" })
 o:depends({ [option_name("protocol")] = "vless" })
 o:depends({ [option_name("protocol")] = "socks" })
@@ -215,6 +216,14 @@ o:depends({ [option_name("transport")] = "ws" })
 
 o = s:option(Value, option_name("ws_path"), translate("WebSocket Path"))
 o:depends({ [option_name("transport")] = "ws" })
+
+-- [[ HttpUpgrade部分 ]]--
+o = s:option(Value, option_name("httpupgrade_host"), translate("HttpUpgrade Host"))
+o:depends({ [option_name("transport")] = "httpupgrade" })
+
+o = s:option(Value, option_name("httpupgrade_path"), translate("HttpUpgrade Path"))
+o.placeholder = "/"
+o:depends({ [option_name("transport")] = "httpupgrade" })
 
 -- [[ HTTP/2部分 ]]--
 
@@ -300,8 +309,7 @@ o = s:option(Value, option_name("grpc_serviceName"), "ServiceName")
 o:depends({ [option_name("transport")] = "grpc" })
 
 o = s:option(Flag, option_name("acceptProxyProtocol"), translate("acceptProxyProtocol"), translate("Whether to receive PROXY protocol, when this node want to be fallback or forwarded by proxy, it must be enable, otherwise it cannot be used."))
-o:depends({ [option_name("transport")] = "tcp" })
-o:depends({ [option_name("transport")] = "ws" })
+o.default = "0"
 
 -- [[ Fallback部分 ]]--
 o = s:option(Flag, option_name("fallback"), translate("Fallback"))

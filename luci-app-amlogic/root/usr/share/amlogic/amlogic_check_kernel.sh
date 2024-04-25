@@ -114,16 +114,32 @@ kernel_api="https://github.com/${kernel_repo}"
 if [[ -n "${KERNEL_TAGS}" ]]; then
     kernel_tag="${KERNEL_TAGS}"
 else
-    [[ "${SOC}" == "rk3588" ]] && kernel_tag="rk3588" || kernel_tag="stable"
+    if [[ "${SOC}" == "rk3588" ]]; then
+        kernel_tag="rk3588"
+    elif [[ "${SOC}" == "rk3528" ]]; then
+        kernel_tag="rk35xx"
+    else
+        kernel_tag="stable"
+    fi
 fi
+
+# Remove the kernel_ prefix
 kernel_tag="${kernel_tag/kernel_/}"
+# If the kernel tag is a number, it is converted to a stable branch
+[[ "${kernel_tag}" =~ ^[1-9]+ ]] && kernel_tag="stable"
 
 # Step 2: Check if there is the latest kernel version
 check_kernel() {
     # 02. Query local version information
     tolog "02. Start checking the kernel version."
+
     # 02.01 Query the current version
-    current_kernel_v=$(uname -r 2>/dev/null | grep -oE '^[1-9]\.[0-9]{1,2}\.[0-9]+')
+    if [[ "${kernel_tag}" == "rk3588" || "${kernel_tag}" == "rk35xx" ]]; then
+        current_kernel_v=$(uname -r 2>/dev/null)
+    else
+        current_kernel_v=$(uname -r 2>/dev/null | grep -oE '^[1-9]\.[0-9]{1,2}\.[0-9]+')
+    fi
+    [[ -n "${current_kernel_v}" ]] || tolog "02.01 The current kernel version is not detected." "1"
     tolog "02.01 current version: ${current_kernel_v}"
     sleep 2
 
@@ -149,7 +165,7 @@ check_kernel() {
     latest_version="$(
         curl -fsSL -m 10 \
             ${kernel_api}/releases/expanded_assets/kernel_${kernel_tag} |
-            grep -oE "${main_line_version}.[0-9]+.tar.gz" | sed 's/.tar.gz//' |
+            grep -oE "${main_line_version}.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' |
             sort -urV | head -n 1
     )"
     [[ -n "${latest_version}" ]] || tolog "02.03 No kernel available, please use another kernel branch." "1"

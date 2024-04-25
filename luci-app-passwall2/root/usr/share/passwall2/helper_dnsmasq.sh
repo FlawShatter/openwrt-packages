@@ -16,7 +16,7 @@ stretch() {
 }
 
 backup_servers() {
-	DNSMASQ_DNS=$(uci show dhcp | grep "@dnsmasq" | grep ".server=" | awk -F '=' '{print $2}' | sed "s/'//g" | tr ' ' ',')
+	DNSMASQ_DNS=$(uci show dhcp.@dnsmasq[0] | grep ".server=" | awk -F '=' '{print $2}' | sed "s/'//g" | tr ' ' ',')
 	if [ -n "${DNSMASQ_DNS}" ]; then
 		uci -q set $CONFIG.@global[0].dnsmasq_servers="${DNSMASQ_DNS}"
 		uci commit $CONFIG
@@ -101,7 +101,7 @@ add() {
 	
 	#始终用国内DNS解析节点域名
 	servers=$(uci show "${CONFIG}" | grep ".address=" | cut -d "'" -f 2)
-	hosts_foreach "servers" host_from_url | grep '[a-zA-Z]$' | sort -u | gen_items settype="${set_type}" setnames="${setflag_4}passwall2_vpslist,${setflag_6}passwall2_vpslist6" dnss="${LOCAL_DNS:-${DEFAULT_DNS}}" outf="${TMP_DNSMASQ_PATH}/10-vpslist_host.conf" ipsetoutf="${TMP_DNSMASQ_PATH}/ipset.conf"
+	hosts_foreach "servers" host_from_url | grep '[a-zA-Z]$' | sort -u | grep -v "engage.cloudflareclient.com" | gen_items settype="${set_type}" setnames="${setflag_4}passwall2_vpslist,${setflag_6}passwall2_vpslist6" dnss="${LOCAL_DNS:-${DEFAULT_DNS}}" outf="${TMP_DNSMASQ_PATH}/10-vpslist_host.conf" ipsetoutf="${TMP_DNSMASQ_PATH}/ipset.conf"
 	echolog "  - [$?]节点列表中的域名(vpslist)：${DEFAULT_DNS:-默认}"
 	
 	echo "conf-dir=${TMP_DNSMASQ_PATH}" > $DNSMASQ_CONF_FILE
